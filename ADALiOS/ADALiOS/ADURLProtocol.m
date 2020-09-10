@@ -57,21 +57,18 @@ static NSString* kADURLProtocolPropertyKey = @"ADURLProtocol";
         //for initialization
         if ( [NSURLProtocol propertyForKey:kADURLProtocolPropertyKey inRequest:request] == nil )
         {
-            AD_LOG_VERBOSE_F(sLog, @"Requested handling of URL host: %@", [request.URL host]);
-
+            [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:sLog errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Requested handling of URL host: %@", [request.URL host]]];
             return YES;
         }
     }
     
-    AD_LOG_VERBOSE_F(sLog, @"Ignoring handling of URL host: %@", [request.URL host]);
-    
+     [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:sLog errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Ignoring handling of URL host: %@", [request.URL host]]];
     return NO;
 }
 
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request
 {
-    AD_LOG_VERBOSE_F(sLog, @"canonicalRequestForRequest host: %@", [request.URL host] );
-    
+    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:sLog errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"canonicalRequestForRequest host: %@", [request.URL host]]];    
     return request;
 }
 
@@ -82,8 +79,8 @@ static NSString* kADURLProtocolPropertyKey = @"ADURLProtocol";
         AD_LOG_WARN(sLog, @"startLoading called without specifying the request.");
         return;
     }
-    
-    AD_LOG_VERBOSE_F(sLog, @"startLoading host: %@", [self.request.URL host] );
+    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:sLog errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"startLoading host: %@", [self.request.URL host]]];
+
     NSMutableURLRequest *mutableRequest = [self.request mutableCopy];
     [NSURLProtocol setProperty:@"YES" forKey:kADURLProtocolPropertyKey inRequest:mutableRequest];
     _connection = [[NSURLConnection alloc] initWithRequest:mutableRequest
@@ -93,7 +90,7 @@ static NSString* kADURLProtocolPropertyKey = @"ADURLProtocol";
 
 - (void)stopLoading
 {
-    AD_LOG_VERBOSE_F(sLog, @"Stop loading");
+    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:sLog errorCode:AD_ERROR_SUCCEEDED additionalInformation:@"Stop loading"];
     [_connection cancel];
 }
 
@@ -101,15 +98,14 @@ static NSString* kADURLProtocolPropertyKey = @"ADURLProtocol";
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-    AD_LOG_VERBOSE_F(sLog, @"connection:didFaileWithError: %@", error);
+    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:sLog errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"connection:didFaileWithError: %@", error]];
     [self.client URLProtocol:self didFailWithError:error];
 }
 
 -(void) connection:(NSURLConnection *)connection
 willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
-    AD_LOG_VERBOSE_F(sLog, @"connection:willSendRequestForAuthenticationChallenge: %@. Previous challenge failure count: %ld", challenge.protectionSpace.authenticationMethod, (long)challenge.previousFailureCount);
-    
+    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:sLog errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"connection:willSendRequestForAuthenticationChallenge: %@. Previous challenge failure count: %ld", challenge.protectionSpace.authenticationMethod, (long)challenge.previousFailureCount]];
     if (![ADNTLMHandler handleNTLMChallenge:challenge urlRequest:[connection currentRequest] customProtocol:self])
     {
         // Do default handling
@@ -121,8 +117,7 @@ willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challe
 
 - (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
 {
-    AD_LOG_VERBOSE_F(sLog, @"HTTPProtocol::connection:willSendRequest:. Redirect response: %@. New request:%@", redirectResponse.URL, request.URL);
-    
+    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:sLog errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"HTTPProtocol::connection:willSendRequest:. Redirect response: %@. New request:%@", redirectResponse.URL, request.URL]];
     // Disallow HTTP for ADURLProtocol
     if ([request.URL.scheme isEqualToString:@"http"])
     {

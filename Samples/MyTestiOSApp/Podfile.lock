@@ -1,16 +1,16 @@
 PODS:
-  - ADAL (1.2.10)
+  - AdalLib (1.2.10)
 
 DEPENDENCIES:
-  - ADAL (from `../../`)
+  - AdalLib (from `../../`)
 
 EXTERNAL SOURCES:
-  ADAL:
+  AdalLib:
     :path: "../../"
 
 SPEC CHECKSUMS:
-  ADAL: 07fd8cbbf3e424610e02ce0696ea06c9c55c8189
+  AdalLib: 1331b179713ac47e7134a28f02b256f3ec32e22c
 
-PODFILE CHECKSUM: 8e45d533a3c56c20049568278cc764bb3a4b7d02
+PODFILE CHECKSUM: cd54e339ea70954cc5654140dae9f3fb2c9208dd
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.3

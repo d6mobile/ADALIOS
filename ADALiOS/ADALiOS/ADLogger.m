@@ -143,7 +143,7 @@ additionalInformation: (NSString*) additionalInformation
     int result = sysctlbyname("hw.cputype", &cpuType, &structSize, NULL, 0);
     if (result)
     {
-        AD_LOG_WARN_F(@"Logging", @"Cannot extract cpu type. Error: %d", result);
+        [ADLogger log:ADAL_LOG_LEVEL_WARN message:@"Logging" errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Cannot extract cpu type. Error: %d", result]];
         return nil;
     }
     
@@ -212,7 +212,7 @@ additionalInformation: (NSString*) additionalInformation
        expiresOn: (NSDate*) expiresOn
    correlationId: (NSUUID*) correlationId
 {
-    AD_LOG_VERBOSE_F(@"Token returned", @"Obtained %@ with hash %@, expiring on %@ and correlationId: %@", tokenType, [self getHash:token], expiresOn, [correlationId UUIDString]);
+    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:@"Token returned" errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Obtained %@ with hash %@, expiring on %@ and correlationId: %@", tokenType, [self getHash:token], expiresOn, [correlationId UUIDString]]];
 }
 
 @end

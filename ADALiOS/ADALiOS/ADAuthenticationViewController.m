@@ -45,20 +45,18 @@
     }
 }
 
-- (void)viewDidUnload
-{
+- (void)didReceiveMemoryWarning {
     DebugLog();
-    
-    [super viewDidUnload];
+    [super didReceiveMemoryWarning];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
+- (BOOL)shouldAutorotate {
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
         // The device is an iPad running iPhone 3.2 or later.
         return YES;
     else
-        return (interfaceOrientation == UIInterfaceOrientationPortrait);
+        return (orientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark - Event Handlers
@@ -80,7 +78,7 @@
         [_activityIndicator startAnimating];
 }
 
-// Launches the UIWebView with a start URL. The UIWebView is halted when a
+// Launches the WKWebView with a start URL. The WKWebView is halted when a
 // prefix of the end URL is reached.
 - (BOOL)startWithURL:(NSURL *)startURL endAtURL:(NSURL *)endURL
 {
@@ -89,8 +87,8 @@
     if ( _webAuthenticationWebViewController )
     {
         // Delegate set up: this object is the delegate for the ADAuthenticationWebViewController,
-        // and the controller will have established itself as the delegate for the UIWebView. However,
-        // this object also wants events from the UIWebView to control the activity indicator so we
+        // and the controller will have established itself as the delegate for the WKWebView. However,
+        // this object also wants events from the WKWebView to control the activity indicator so we
         // hijack the delegate here and forward events as they are seen in this object.
         _webAuthenticationWebViewController.delegate = self;
         _webView.navigationDelegate                            = self;
@@ -133,19 +131,9 @@
 #pragma unused(webView)
 #pragma unused(decisionHandler)
     
-    // Forward to the UIWebView controller
+    // Forward to the WKWebView controller
     return [_webAuthenticationWebViewController webView:webView decidePolicyForNavigationAction:navigationAction decisionHandler:decisionHandler];
 }
-
-//- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
-//{
-//#pragma unused(webView)
-//#pragma unused(navigationType)
-//
-//    // Forward to the UIWebView controller
-//    return [_webAuthenticationWebViewController webView:webView shouldStartLoadWithRequest:request navigationType:navigationType];
-//}
-
 
 - (void) webView: (WKWebView *) webView didStartProvisionalNavigation: (null_unspecified WKNavigation *) navigation {
 #pragma unused(webView)
@@ -160,25 +148,9 @@
                                    userInfo:nil
                                     repeats:NO];
     
-    // Forward to the UIWebView controller
+    // Forward to the WKWebView controller
     [_webAuthenticationWebViewController webView:webView didStartProvisionalNavigation:navigation];
 }
-
-//- (void)webViewDidStartLoad:(UIWebView *)webView
-//{
-//#pragma unused(webView)
-//
-//    // Start the activity indicator after 2 second delay
-//    _loading = YES;
-//    [NSTimer scheduledTimerWithTimeInterval:2.0
-//                                     target:self
-//                                   selector:@selector(onStartActivityIndicator:)
-//                                   userInfo:nil
-//                                    repeats:NO];
-//
-//    // Forward to the UIWebView controller
-//    [_webAuthenticationWebViewController webViewDidStartLoad:webView];
-//}
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
 #pragma unused(webView)
@@ -188,21 +160,9 @@
     _loading = NO;
     [_activityIndicator stopAnimating];
     
-    // Forward to the UIWebView controller
+    // Forward to the WKWebView controller
     [_webAuthenticationWebViewController webView:webView didFinishNavigation:navigation];
 }
-
-//- (void)webViewDidFinishLoad:(UIWebView *)webView
-//{
-//#pragma unused(webView)
-//
-//    // Disable the activity indicator
-//    _loading = NO;
-//    [_activityIndicator stopAnimating];
-//
-//    // Forward to the UIWebView controller
-//    [_webAuthenticationWebViewController webViewDidFinishLoad:webView];
-//}
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
 #pragma unused(webView)
@@ -213,20 +173,8 @@
     _loading = NO;
     [_activityIndicator stopAnimating];
     
-    // Forward to the UIWebView controller
+    // Forward to the WKWebView controller
     [_webAuthenticationWebViewController webView:webView didFailNavigation:navigation withError:error];
 }
-
-//- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-//{
-//#pragma unused(webView)
-//
-//    // Disable the activity indicator
-//    _loading = NO;
-//    [_activityIndicator stopAnimating];
-//
-//    // Forward to the UIWebView controller
-//    [_webAuthenticationWebViewController webView:webView didFailLoadWithError:error];
-//}
 
 @end

@@ -24,8 +24,8 @@
 #import "ADTestAppCacheViewController.h"
 #import "ADTestAppSettings.h"
 
-#import <ADAL/ADAL.h>
-#import <ADAL/ADKeychainTokenCacheStore.h>
+#import <AdalLib/ADAL.h>
+#import <AdalLib/ADKeychainTokenCacheStore.h>
 
 // NOTE: This is done for testing purposes only. Forward declaring and calling
 // internal APIs in production code would be inappropriate and can be broken
@@ -83,8 +83,7 @@
     
     [self setEdgesForExtendedLayout:UIRectEdgeNone];
     [self setExtendedLayoutIncludesOpaqueBars:NO];
-    [self setAutomaticallyAdjustsScrollViewInsets:NO];
-    
+    _cacheTableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     return self;
 }
 
@@ -246,7 +245,7 @@
         // through all the itmes we get back
         ADKeychainTokenCacheStore* cache = [ADKeychainTokenCacheStore new];
         NSArray* allItems = [cache allItemsWithError:nil];
-        _cacheMap = [NSMutableDictionary new];
+        self->_cacheMap = [NSMutableDictionary new];
         for (ADTokenCacheStoreItem* item in allItems)
         {
             [self addTokenToCacheMap:item];
@@ -254,14 +253,14 @@
         
         // Now that we have all the items sorted out in the dictionaries flatten it
         // out to a single list.
-        _users = [[NSMutableArray alloc] initWithCapacity:_cacheMap.count];
-        _userTokens = [[NSMutableArray alloc] initWithCapacity:_cacheMap.count];
-        for (NSString* userId in _cacheMap)
+        self->_users = [[NSMutableArray alloc] initWithCapacity:self->_cacheMap.count];
+        self->_userTokens = [[NSMutableArray alloc] initWithCapacity:self->_cacheMap.count];
+        for (NSString* userId in self->_cacheMap)
         {
             NSUInteger count = 0;
-            [_users addObject:userId];
+            [self->_users addObject:userId];
             
-            NSDictionary* userTokens = [_cacheMap objectForKey:userId];
+            NSDictionary* userTokens = [self->_cacheMap objectForKey:userId];
             for (NSString* key in userTokens)
             {
                 count += [[userTokens objectForKey:key] count]  + 1; // Add one for the "client ID" item
@@ -293,13 +292,13 @@
                 }
             }
             
-            [_userTokens addObject:arrUserTokens];
+            [self->_userTokens addObject:arrUserTokens];
         }
         
-        _cacheMap = nil;
+        self->_cacheMap = nil;
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [_cacheTableView reloadData];
+            [self->_cacheTableView reloadData];
             [self.refreshControl endRefreshing];
         });
     });

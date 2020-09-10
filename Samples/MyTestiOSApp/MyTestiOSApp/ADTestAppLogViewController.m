@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 
 #import "ADTestAppLogViewController.h"
-#import <ADAL/ADAL.h>
+#import <AdalLib/ADAL.h>
 
 @interface ADTestAppLogViewController ()
 
@@ -64,18 +64,18 @@ static NSAttributedString* s_attrNewLine = nil;
         NSAttributedString* attrLog = [[NSAttributedString alloc] initWithString:log];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (_logView)
+            if (self->_logView)
             {
-                [[_logView textStorage] appendAttributedString:attrLog];
-                [[_logView textStorage] appendAttributedString:s_attrNewLine];
+                [[self->_logView textStorage] appendAttributedString:attrLog];
+                [[self->_logView textStorage] appendAttributedString:s_attrNewLine];
                 
                 [self scrollToBottom];
             }
             else
             {
                 
-                [_logStorage appendAttributedString:attrLog];
-                [_logStorage appendAttributedString:s_attrNewLine];
+                [self->_logStorage appendAttributedString:attrLog];
+                [self->_logStorage appendAttributedString:s_attrNewLine];
             }
         });
     }];

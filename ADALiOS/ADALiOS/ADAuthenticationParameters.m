@@ -72,8 +72,7 @@
     {
         ADWebRequest* request = [[ADWebRequest alloc] initWithURL:resourceUrl correlationId:nil];
         request.method = HTTPGet;
-        AD_LOG_VERBOSE_F(@"Starting authorization challenge request", @"Resource: %@", resourceUrl);
-        
+        [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:@"Starting authorization challenge request" errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Resource: %@", resourceUrl]];        
         [request send:^(NSError * error, ADWebResponse *response) {
             ADAuthenticationError* adError;
             ADAuthenticationParameters* parameters;

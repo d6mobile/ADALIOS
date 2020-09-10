@@ -6,11 +6,6 @@ target 'MyTestiOSApp' do
   use_frameworks!
 
   # Pods for MyTestiOSApp
-  pod 'ADAL', :path => '../../'
-
-  target 'MyTestiOSAppTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
+  pod 'AdalLib', :path => '../../'
+  
 end

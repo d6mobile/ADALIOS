@@ -263,8 +263,7 @@ ID_TOKEN_PROPERTY_GETTER(GuestId, ID_TOKEN_GUEST_ID);
     if ([NSString adIsStringNilOrBlank:storedUserId])
     {
         //The userId should be valid:
-        AD_LOG_ERROR_F(@"Invalid user information", AD_ERROR_BAD_CACHE_FORMAT, @"Invalid userId: %@", storedUserId);
-        
+        [ADLogger log:ADAL_LOG_LEVEL_ERROR message:@"Invalid user information" errorCode:AD_ERROR_BAD_CACHE_FORMAT additionalInformation:[NSString stringWithFormat:@"Invalid userId: %@", storedUserId]];        
         return nil;
     }
     self = [self initWithUserId:storedUserId];

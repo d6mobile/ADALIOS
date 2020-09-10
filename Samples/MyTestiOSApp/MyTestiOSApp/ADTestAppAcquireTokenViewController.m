@@ -24,7 +24,8 @@
 #import "ADTestAppAcquireTokenViewController.h"
 #import "ADTestAppSettings.h"
 #import "NSString+ADHelperMethods.h"
-#import <ADAL/ADAL.h>
+#import <AdalLib/ADAL.h>
+#import <WebKit/WebKit.h>
 
 @interface ADTestAppAcquireTokenViewController ()
 
@@ -45,7 +46,7 @@
     IBOutlet UITextView* _resultView;
     
     IBOutlet UIView* _authView;
-    IBOutlet UIWebView* _webView;
+    IBOutlet WKWebView* _webView;
     
     BOOL _userIdEdited;
 }
@@ -178,8 +179,8 @@
         [_authView setFrame:self.view.frame];
         
         [UIView animateWithDuration:0.5 animations:^{
-            [_acquireSettingsView setHidden:YES];
-            [_authView setHidden:NO];
+            [self->_acquireSettingsView setHidden:YES];
+            [self->_authView setHidden:NO];
         }];
     }
     
@@ -209,13 +210,13 @@
         NSLog(@"result: %@", result);
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            if ([_acquireSettingsView isHidden])
+            if ([self->_acquireSettingsView isHidden])
             {
                 [self updateResultView:result];
                 
-                [_webView loadHTMLString:@"<html><head></head><body>done!</body></html>" baseURL:nil];
-                [_authView setHidden:YES];
-                [_acquireSettingsView setHidden:NO];
+                [self->_webView loadHTMLString:@"<html><head></head><body>done!</body></html>" baseURL:nil];
+                [self->_authView setHidden:YES];
+                [self->_acquireSettingsView setHidden:NO];
                 [self.view setNeedsDisplay];
             }
             

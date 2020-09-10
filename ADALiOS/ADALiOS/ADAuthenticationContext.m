@@ -1009,7 +1009,7 @@ return; \
         NSString* savedRefreshToken = cacheItem.refreshToken;
         if (result.multiResourceRefreshToken)
         {
-            AD_LOG_VERBOSE_F(@"Token cache store", @"Storing multi-resource refresh token for authority: %@", self.authority);
+            [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:@"Token cache store" errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Storing multi-resource refresh token for authority: %@", self.authority]];
             
             //If the server returned a multi-resource refresh token, we break
             //the item into two: one with the access token and no refresh token and
@@ -1024,7 +1024,7 @@ return; \
             [self.tokenCacheStore addOrUpdateItem:multiRefreshTokenItem error:nil];
         }
         
-        AD_LOG_VERBOSE_F(@"Token cache store", @"Storing access token for resource: %@", cacheItem.resource);
+        [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:@"Token cache store" errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Storing access token for resource: %@", cacheItem.resource]];
         [self.tokenCacheStore addOrUpdateItem:cacheItem error:nil];
         cacheItem.refreshToken = savedRefreshToken;//Restore for the result
     }
@@ -1047,7 +1047,7 @@ return; \
                 ADTokenCacheStoreItem* existing = [self.tokenCacheStore getItemWithKey:exactKey userId:cacheItem.userInformation.userId error:nil];
                 if ([refreshToken isEqualToString:existing.refreshToken])//If still there, attempt to remove
                 {
-                    AD_LOG_VERBOSE_F(@"Token cache store", @"Removing cache for resource: %@", cacheItem.resource);
+                    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:@"Token cache store" errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Removing cache for resource: %@", cacheItem.resource]];
                     [self.tokenCacheStore removeItemWithKey:exactKey userId:existing.userInformation.userId error:nil];
                     removed = YES;
                 }
@@ -1062,7 +1062,7 @@ return; \
                     ADTokenCacheStoreItem* broadItem = [self.tokenCacheStore getItemWithKey:broadKey userId:cacheItem.userInformation.userId error:nil];
                     if (broadItem && [refreshToken isEqualToString:broadItem.refreshToken])//Remove if still there
                     {
-                        AD_LOG_VERBOSE_F(@"Token cache store", @"Removing multi-resource refresh token for authority: %@", self.authority);
+                        [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:@"Token cache store" errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Removing multi-resource refresh token for authority: %@", self.authority]];
                         [self.tokenCacheStore removeItemWithKey:broadKey userId:cacheItem.userInformation.userId error:nil];
                     }
                 }
@@ -1086,7 +1086,7 @@ return; \
     HANDLE_ARGUMENT(refreshToken);
     HANDLE_ARGUMENT(clientId);
     
-    AD_LOG_VERBOSE_F(@"Attempting to acquire an access token from refresh token.", @"Resource: %@", resource);
+    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:@"Attempting to acquire an access token from refresh token." errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Resource: %@", resource]];
     
     [self updateCorrelationId:&correlationId];
     if (validateAuthority)
@@ -1132,7 +1132,7 @@ return; \
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^
                    {
-                       AD_LOG_INFO_F(@"Sending request for refreshing token.", @"Client id: '%@'; resource: '%@';", clientId, resource);
+                       [ADLogger log:ADAL_LOG_LEVEL_INFO message:@"Sending request for refreshing token." errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Client id: '%@'; resource: '%@';", clientId, resource]];
                        [self request:self.authority
                          requestData:request_data
                 requestCorrelationId:correlationId
@@ -1219,16 +1219,16 @@ return; \
         responseUUID = [[NSUUID alloc] initWithUUIDString:responseId];
         if (!responseUUID)
         {
-            AD_LOG_INFO_F(@"Bad correlation id", @"The received correlation id is not a valid UUID. Sent: %@; Received: %@", requestCorrelationId, responseId);
+            [ADLogger log:ADAL_LOG_LEVEL_INFO message:@"Bad correlation id" errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"The received correlation id is not a valid UUID. Sent: %@; Received: %@", requestCorrelationId, responseId]];
         }
         else if (![requestCorrelationId isEqual:responseUUID])
         {
-            AD_LOG_INFO_F(@"Correlation id mismatch", @"Mismatch between the sent correlation id and the received one. Sent: %@; Received: %@", requestCorrelationId, responseId);
+            [ADLogger log:ADAL_LOG_LEVEL_INFO message:@"Correlation id mismatch" errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Mismatch between the sent correlation id and the received one. Sent: %@; Received: %@", requestCorrelationId, responseId]];
         }
     }
     else
     {
-        AD_LOG_INFO_F(@"Missing correlation id", @"No correlation id received for request with correlation id: %@", [requestCorrelationId UUIDString]);
+        [ADLogger log:ADAL_LOG_LEVEL_INFO message:@"Missing correlation id" errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"No correlation id received for request with correlation id: %@", [requestCorrelationId UUIDString]]];
     }
     
     ADAuthenticationError* error = [self errorFromDictionary:response errorCode:(fromRefreshTokenWorkflow) ? AD_ERROR_INVALID_REFRESH_TOKEN : AD_ERROR_AUTHENTICATION];
@@ -1261,7 +1261,7 @@ return; \
             }
             else
             {
-                AD_LOG_WARN_F(@"Unparsable time", @"The response value for the access token expiration cannot be parsed: %@", expires);
+                [ADLogger log:ADAL_LOG_LEVEL_WARN message:@"Unparsable time" errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"The response value for the access token expiration cannot be parsed: %@", expires]];
                 // Unparseable, use default value
                 expires = [NSDate dateWithTimeIntervalSinceNow:3600.0];//1 hour
             }
@@ -1286,7 +1286,7 @@ return; \
         {
             if (item.resource && ![item.resource isEqualToString:resource])
             {
-                AD_LOG_WARN_F(@"Wrong resource returned by the server.", @"Expected resource: '%@'; Server returned: '%@'", item.resource, resource);
+                [ADLogger log:ADAL_LOG_LEVEL_WARN message:@"Wrong resource returned by the server." errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Expected resource: '%@'; Server returned: '%@'", item.resource, resource]];
             }
             //Currently, if the server has returned a "resource" parameter and we have a refresh token,
             //this token is a multi-resource refresh token:
@@ -1425,11 +1425,11 @@ return; \
         
         if (![NSString adIsStringNilOrBlank:authorizationServer] && ![NSString adIsStringNilOrBlank:resource])
         {
-            AD_LOG_VERBOSE_F(@"State", @"The authorization server returned the following state: %@", state);
+            [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:@"State" errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"The authorization server returned the following state: %@", state]];
             return YES;
         }
     }
-    AD_LOG_WARN_F(@"State error", @"Missing or invalid state returned: %@", state);
+    [ADLogger log:ADAL_LOG_LEVEL_WARN message:@"State error" errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Missing or invalid state returned: %@", state]];
     return NO;
 }
 
@@ -1449,8 +1449,7 @@ return; \
         completionBlock(nil, [ADAuthenticationError errorFromArgument:correlationId argumentName:@"correlationId"]);
         return;
     }
-    
-    AD_LOG_VERBOSE_F(@"Requesting authorization code.", @"Requesting authorization code for resource: %@", resource);
+    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:@"Requesting authorization code." errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Requesting authorization code for resource: %@", resource]];
     if (![self takeExclusionLockWithCallback:completionBlock])
     {
         return;
@@ -1519,7 +1518,7 @@ return; \
 {
 #pragma unused(scope)
     HANDLE_ARGUMENT(correlationId);//Should be set by the caller
-    AD_LOG_VERBOSE_F(@"Requesting token from authorization code.", @"Requesting token by authorization code for resource: %@", resource);
+    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:@"Requesting token from authorization code." errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Requesting token by authorization code for resource: %@", resource]];
     
     //samlAssertion = [NSString samlAssertion adBase64];
     NSData *encodeData = [samlAssertion dataUsingEncoding:NSUTF8StringEncoding];
@@ -1558,8 +1557,7 @@ return; \
 {
     HANDLE_ARGUMENT(code);
     HANDLE_ARGUMENT(correlationId);//Should be set by the caller
-    AD_LOG_VERBOSE_F(@"Requesting token from authorization code.", @"Requesting token by authorization code for resource: %@", resource);
-    
+    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:@"Requesting token from authorization code." errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Requesting token by authorization code for resource: %@", resource]];
     //Fill the data for the token refreshing:
     NSMutableDictionary *request_data = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                          OAUTH2_AUTHORIZATION_CODE, OAUTH2_GRANT_TYPE,
@@ -1624,8 +1622,7 @@ additionalHeaders:(NSDictionary *)additionalHeaders
             [webRequest.headers setObject:[additionalHeaders objectForKey:key ] forKey:key];
         }
     }
-    
-    AD_LOG_VERBOSE_F(@"Post request", @"Sending POST request to %@ with client-request-id %@", endPoint, [requestCorrelationId UUIDString]);
+    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:@"Post request" errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Sending POST request to %@ with client-request-id %@", endPoint, [requestCorrelationId UUIDString]]];
     
     webRequest.body = [[request_data adURLFormEncode] dataUsingEncoding:NSUTF8StringEncoding];
     __block NSDate* startTime = [NSDate new];
@@ -1672,7 +1669,7 @@ additionalHeaders:(NSDictionary *)additionalHeaders
                         {
                             // Unrecognized JSON response
                             NSString* bodyStr = [[NSString alloc] initWithData:webResponse.body encoding:NSUTF8StringEncoding];
-                            AD_LOG_ERROR_F(@"JSON deserialization", jsonError.code, @"Error: %@. Body text: '%@'. HTTPS Code: %ld. Response correlation id: %@", jsonError.description, bodyStr, (long)webResponse.statusCode, responseCorrelationId);
+                            [ADLogger log:ADAL_LOG_LEVEL_ERROR message:@"JSON deserialization" errorCode:jsonError.code additionalInformation:[NSString stringWithFormat:@"Error: %@. Body text: '%@'. HTTPS Code: %ld. Response correlation id: %@", jsonError.description, bodyStr, (long)webResponse.statusCode, responseCorrelationId]];
                             adError = [ADAuthenticationError errorFromNSError:jsonError errorDetails:jsonError.localizedDescription];
                         }
                         else
@@ -1744,7 +1741,7 @@ additionalHeaders:(NSDictionary *)additionalHeaders
     
     if (!authHeaderParams)
     {
-        AD_LOG_ERROR_F(@"Unparseable wwwAuthHeader received.", AD_ERROR_WPJ_REQUIRED, @"%@", wwwAuthHeaderValue);
+        [ADLogger log:ADAL_LOG_LEVEL_ERROR message:@"Unparseable wwwAuthHeader received." errorCode:AD_ERROR_WPJ_REQUIRED additionalInformation:[NSString stringWithFormat:@"%@", wwwAuthHeaderValue]];
     }
     
     NSString* authHeader = [ADPkeyAuthHelper createDeviceAuthResponse:authorizationServer

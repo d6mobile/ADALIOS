@@ -40,7 +40,7 @@ ADWorkPlaceJoinUtil* wpjUtilManager = nil;
                    privateKeyIdentifier: (NSString*) privateKey
                                   error: (NSError**) error
 {
-    AD_LOG_VERBOSE_F(@"Getting private key - ", @"%@ shared access Group", sharedAccessGroup);
+    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:@"Getting private key - " errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"%@ shared access Group", sharedAccessGroup]];
     OSStatus status = noErr;
     CFDataRef item = NULL;
     NSData *keyData = nil;
@@ -83,8 +83,8 @@ ADWorkPlaceJoinUtil* wpjUtilManager = nil;
 - (ADRegistrationInformation*)getRegistrationInformation: (NSString*) sharedAccessGroup
                                                    error: (NSError**) error
 {
-    AD_LOG_VERBOSE_F(@"Attempting to get registration information - ", @"%@ shared access Group", sharedAccessGroup);
-    
+ 
+    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:@"Attempting to get registration information - " errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"%@ shared access Group", sharedAccessGroup]];
     SecIdentityRef identity = NULL;
     SecCertificateRef certificate = NULL;
     SecKeyRef privateKey = NULL;
@@ -160,8 +160,7 @@ ADWorkPlaceJoinUtil* wpjUtilManager = nil;
     }
     else
     {
-        AD_LOG_VERBOSE_F(@"Unable to extract a workplace join identity for", @"%@ shared access keychain",
-                         sharedAccessGroup);        
+        [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:@"Unable to extract a workplace join identity for" errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"%@ shared access keychain", sharedAccessGroup]];
         return nil;
     }
 }

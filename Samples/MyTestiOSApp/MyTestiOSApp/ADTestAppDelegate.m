@@ -30,7 +30,7 @@
 #import "ADTestAppLogViewController.h"
 #import "ADTestAppSettingsViewController.h"
 
-#import <ADAL/ADAL.h>
+#import <AdalLib/ADAL.h>
 
 @implementation ADTestAppDelegate
 {

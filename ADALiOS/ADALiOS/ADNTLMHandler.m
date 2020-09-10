@@ -100,7 +100,7 @@ NSURLConnection *_conn = nil;
                 _conn = nil;
             }
             // This is the NTLM challenge: use the identity to authenticate:
-            AD_LOG_VERBOSE_F(AD_WPJ_LOG, @"Attempting to handle NTLM challenge for host: %@", challenge.protectionSpace.host);
+            [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:AD_WPJ_LOG errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Attempting to handle NTLM challenge for host: %@", challenge.protectionSpace.host]];
             [UIAlertView presentCredentialAlert:^(NSUInteger index) {
                 if (index == 1)
                 {
@@ -125,8 +125,7 @@ NSURLConnection *_conn = nil;
             succeeded = YES;
         }//@synchronized
     } else{
-        
-        AD_LOG_VERBOSE_F(AD_WPJ_LOG, @"Ignoring to handle challenge: %@", challenge.protectionSpace.authenticationMethod);
+        [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:AD_WPJ_LOG errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Ignoring to handle challenge: %@", challenge.protectionSpace.authenticationMethod]];
     }//Challenge type
     
     return succeeded;

@@ -18,7 +18,7 @@
 
 #import <Security/Security.h>
 #import "ADALiOS.h"
-#import "ADKeyChainTokenCacheStore.h"
+#import "ADKeychainTokenCacheStore.h"
 #import "ADTokenCacheStoreItem.h"
 #import "NSString+ADHelperMethods.h"
 #import "ADTokenCacheStoreKey.h"
@@ -162,7 +162,7 @@ const long sKeychainVersion = 1;//will need to increase when we break the forwar
         NSDictionary* first = [toReturn objectForKey:key];
         if (first != nil)
         {
-            AD_LOG_INFO_F(sKeyChainlog, @"Duplicated keychain cache entry: %@. Picking the newest...", key);
+            [ADLogger log:ADAL_LOG_LEVEL_INFO message:sKeyChainlog errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"Duplicated keychain cache entry: %@. Picking the newest...", key]];
             //Note that this can happen if the application has multiple keychain groups and the keychain group is
             //not specified explicitly:
             //Recover by picking the newest (based on modification date):
@@ -185,7 +185,7 @@ const long sKeychainVersion = 1;//will need to increase when we break the forwar
 -(void) LogItem: (ADTokenCacheStoreItem*) item
         message: (NSString*) additionalMessage
 {
-    AD_LOG_VERBOSE_F(sKeyChainlog, @"%@. Resource: %@ Access token hash: %@; Refresh token hash: %@", item.resource,additionalMessage, [ADLogger getHash:item.accessToken], [ADLogger getHash:item.refreshToken]);
+    [ADLogger log:ADAL_LOG_LEVEL_VERBOSE message:sKeyChainlog errorCode:AD_ERROR_SUCCEEDED additionalInformation:[NSString stringWithFormat:@"%@. Resource: %@ Access token hash: %@; Refresh token hash: %@", item.resource,additionalMessage, [ADLogger getHash:item.accessToken], [ADLogger getHash:item.refreshToken]]];
 }
 
 //Updates the keychain item. "attributes" parameter should ALWAYS come from previous
@@ -485,7 +485,7 @@ const long sKeychainVersion = 1;//will need to increase when we break the forwar
 /*! Extracts the key from the item and uses it to set the cache details. If another item with the
  same key exists, it will be overriden by the new one. 'getItemWithKey' method can be used to determine
  if an item already exists for the same key.
- @param error: in case of an error, if this parameter is not nil, it will be filled with
+ @param error in case of an error, if this parameter is not nil, it will be filled with
  the error details. */
 -(void) addOrUpdateItem: (ADTokenCacheStoreItem*) item
                   error: (ADAuthenticationError* __autoreleasing*) error
