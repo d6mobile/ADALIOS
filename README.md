@@ -6,15 +6,10 @@
 
 ## How to Update Your Application with Cocoapods (recommended)
 
-If you are using the 2.x version of our library, ensure the following line is in your `Podfile` in the root directory of your application:
-
-```
-pod 'ADAL', '~> 2.2'
-```
 If you are using the 1.2 version of our library, ensure the following line is in your `Podfile` in the root directory of your application:
 
 ```
-pod 'ADAL', '~> 1.2'
+pod 'AdalLib', '~> 1.2'
 ```
 Once this is complete, run the `pod update` command to update your application. 
 
@@ -22,7 +17,7 @@ Once this is complete, run the `pod update` command to update your application.
 ## How to Update Your Application with source
 
 1.	Download the latest code from the task you require.
-2.	In your XCode 8 or higher project, Click File -> Add Files
+2.	In your XCode 11 or higher project, Click File -> Add Files
 3.	In the Finder that appears, navigate to where you downloaded the ADAL source. Go to the ADAL folder, and select `ADAL.xcodeproj` and click Add.
 4.	You’ll see you have another Project in your Project list to the left called `ADAL.xcodeproj`
 5.	Under “Linked Frameworks and Libraries” in your application’s General project settings, ensure ADALiOS.a is listed and not in red color font. Red color font means XCode can’t find the library and you need to update the location by removing the entry and adding it again.
@@ -80,7 +75,7 @@ To download a copy of the source code, click "Download ZIP" on the right side of
 
 ###Option 2: Cocoapods
 
-    pod 'ADAL', '~> 1.2'
+    pod 'AdalLib', '~> 1.2'
 
 ## Usage
 
